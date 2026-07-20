@@ -2,6 +2,7 @@
 import urllib.request
 import re
 import os
+import time
 
 # Configuration of output files and their upstream rule sources
 RULE_CONFIGS = {
@@ -36,18 +37,21 @@ RULE_CONFIGS = {
     ]
 }
 
-def fetch_content(url):
-    print(f"Fetching: {url}")
-    req = urllib.request.Request(
-        url, 
-        headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
-    )
-    try:
-        with urllib.request.urlopen(req, timeout=15) as response:
-            return response.read().decode('utf-8')
-    except Exception as e:
-        print(f"Error fetching {url}: {e}")
-        return ""
+def fetch_content(url, retries=3):
+    for i in range(retries):
+        print(f"Fetching (Attempt {i+1}/{retries}): {url}")
+        req = urllib.request.Request(
+            url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+        )
+        try:
+            with urllib.request.urlopen(req, timeout=15) as response:
+                return response.read().decode('utf-8')
+        except Exception as e:
+            print(f"Error fetching {url} on attempt {i+1}: {e}")
+            if i == retries - 1:
+                return ""
+            time.sleep(2)
 
 def parse_rules(content):
     rules = set()
@@ -143,13 +147,16 @@ def main():
         )
         
         output_file = os.path.join(output_dir, filename)
+        # Use the base name of the rule list (excluding the .list extension) as the policy placeholder.
+        # This makes it a valid 3-column QX rule, and allows the user to bind it to any policy group.
+        policy_placeholder = filename.split('.')[0]
         try:
             with open(output_file, 'w', encoding='utf-8') as f:
                 f.write(f"# NAME: {filename.split('.')[0]} Rules\n")
                 f.write(f"# TOTAL: {len(sorted_rules)}\n")
                 f.write("# UPDATED: Auto-updated\n\n")
                 for r_type, r_val in sorted_rules:
-                    f.write(f"{r_type},{r_val}\n")
+                    f.write(f"{r_type},{r_val},{policy_placeholder}\n")
             print(f"Successfully wrote {len(sorted_rules)} rules to {output_file}")
         except Exception as e:
             print(f"Error writing {output_file}: {e}")
