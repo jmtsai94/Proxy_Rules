@@ -3,13 +3,38 @@ import urllib.request
 import re
 import os
 
-# URLs to fetch rules from
-URLS = [
-    "https://raw.githubusercontent.com/666OS/rules/refs/heads/release/mihomo/AI.txt",
-    "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Gemini/Gemini.list",
-    "https://ddgksf2013.top/filter/Ai.yaml",
-    "https://github.com/fmz200/wool_scripts/raw/main/Loon/rule/AI.list"
-]
+# Configuration of output files and their upstream rule sources
+RULE_CONFIGS = {
+    "AI.list": [
+        "https://raw.githubusercontent.com/666OS/rules/refs/heads/release/mihomo/AI.txt",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Gemini/Gemini.list",
+        "https://ddgksf2013.top/filter/Ai.yaml",
+        "https://github.com/fmz200/wool_scripts/raw/main/Loon/rule/AI.list"
+    ],
+    "Streaming.list": [
+        "https://raw.githubusercontent.com/ddgksf2013/Filter/master/Streaming.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Netflix/Netflix.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Disney/Disney.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/TikTok/TikTok.list"
+    ],
+    "Proxy.list": [
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/QuantumultX/Proxy/Proxy.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Google/Google.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Spotify/Spotify.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/GitHub/GitHub.list",
+        "https://raw.githubusercontent.com/ConnersHua/RuleGo/master/Surge/Ruleset/Proxy.list"
+    ],
+    "direct.list": [
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/WeChat/WeChat.list",
+        "https://raw.githubusercontent.com/ConnersHua/RuleGo/master/Surge/Ruleset/Direct+.list",
+        "https://raw.githubusercontent.com/ddgksf2013/Filter/master/Unbreak.list",
+        "https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/filter/filterFix.list"
+    ],
+    "Crypto.list": [
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/QuantumultX/Crypto/Crypto.list",
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/QuantumultX/Cryptocurrency/Cryptocurrency.list"
+    ]
+}
 
 def fetch_content(url):
     print(f"Fetching: {url}")
@@ -43,7 +68,6 @@ def parse_rules(content):
         # Strip trailing comments
         for comment_char in ('#', ';', '//'):
             if comment_char in line:
-                # Make sure the comment char is not part of a value (e.g., inside a regex or URL if any, but rule values don't have these)
                 line = line.split(comment_char)[0].strip()
                 
         # Handle YAML format list item prefix "- "
@@ -77,42 +101,58 @@ def parse_rules(content):
     return rules
 
 def main():
-    all_rules = set()
-    for url in URLS:
-        content = fetch_content(url)
-        if content:
-            rules = parse_rules(content)
-            print(f"Parsed {len(rules)} unique rules from {url}")
-            all_rules.update(rules)
+    # Ensure Rules directory exists
+    output_dir = "Rules"
+    os.makedirs(output_dir, exist_ok=True)
+    
+    # Remove old AI.list from root if it exists
+    old_ai_list = "AI.list"
+    if os.path.exists(old_ai_list):
+        try:
+            os.remove(old_ai_list)
+            print(f"Removed old {old_ai_list} from root directory.")
+        except Exception as e:
+            print(f"Error removing old {old_ai_list}: {e}")
             
-    print(f"Total unique rules merged: {len(all_rules)}")
-    
-    # Sort rules: Group by type, then sort alphabetically by value
-    type_priority = {
-        'HOST': 1,
-        'HOST-SUFFIX': 2,
-        'HOST-KEYWORD': 3,
-        'IP-CIDR': 4,
-        'IP6-CIDR': 5,
-        'USER-AGENT': 6
-    }
-    
-    sorted_rules = sorted(
-        all_rules,
-        key=lambda r: (type_priority.get(r[0], 99), r[1])
-    )
-    
-    output_file = "AI.list"
-    try:
-        with open(output_file, 'w', encoding='utf-8') as f:
-            f.write("# NAME: AI Rules\n")
-            f.write(f"# TOTAL: {len(sorted_rules)}\n")
-            f.write("# UPDATED: Auto-updated\n\n")
-            for r_type, r_val in sorted_rules:
-                f.write(f"{r_type},{r_val}\n")
-        print(f"Successfully wrote {len(sorted_rules)} rules to {output_file}")
-    except Exception as e:
-        print(f"Error writing output file: {e}")
+    # Process each rule list
+    for filename, urls in RULE_CONFIGS.items():
+        print(f"\n=== Processing {filename} ===")
+        all_rules = set()
+        for url in urls:
+            content = fetch_content(url)
+            if content:
+                rules = parse_rules(content)
+                print(f"Parsed {len(rules)} unique rules from {url}")
+                all_rules.update(rules)
+                
+        print(f"Total unique rules merged for {filename}: {len(all_rules)}")
+        
+        # Sort rules: Group by type, then sort alphabetically by value
+        type_priority = {
+            'HOST': 1,
+            'HOST-SUFFIX': 2,
+            'HOST-KEYWORD': 3,
+            'IP-CIDR': 4,
+            'IP6-CIDR': 5,
+            'USER-AGENT': 6
+        }
+        
+        sorted_rules = sorted(
+            all_rules,
+            key=lambda r: (type_priority.get(r[0], 99), r[1])
+        )
+        
+        output_file = os.path.join(output_dir, filename)
+        try:
+            with open(output_file, 'w', encoding='utf-8') as f:
+                f.write(f"# NAME: {filename.split('.')[0]} Rules\n")
+                f.write(f"# TOTAL: {len(sorted_rules)}\n")
+                f.write("# UPDATED: Auto-updated\n\n")
+                for r_type, r_val in sorted_rules:
+                    f.write(f"{r_type},{r_val}\n")
+            print(f"Successfully wrote {len(sorted_rules)} rules to {output_file}")
+        except Exception as e:
+            print(f"Error writing {output_file}: {e}")
 
 if __name__ == "__main__":
     main()
