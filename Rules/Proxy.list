@@ -1,5 +1,5 @@
 # NAME: Proxy Rules
-# TOTAL: 7853
+# TOTAL: 7855
 # UPDATED: Auto-updated
 
 HOST,a248.e.akamai.net,Proxy
@@ -1391,6 +1391,7 @@ HOST-SUFFIX,cixiaoya.club,Proxy
 HOST-SUFFIX,ck101.com,Proxy
 HOST-SUFFIX,cl.ly,Proxy
 HOST-SUFFIX,clarionproject.org,Proxy
+HOST-SUFFIX,clashyun.com,Proxy
 HOST-SUFFIX,classicalguitarblog.net,Proxy
 HOST-SUFFIX,claude.com,Proxy
 HOST-SUFFIX,clb.org.hk,Proxy
@@ -6156,6 +6157,7 @@ HOST-SUFFIX,syncback.com,Proxy
 HOST-SUFFIX,synergyse.com,Proxy
 HOST-SUFFIX,syosetu.com,Proxy
 HOST-SUFFIX,sysresccd.org,Proxy
+HOST-SUFFIX,sysub.com,Proxy
 HOST-SUFFIX,sytes.net,Proxy
 HOST-SUFFIX,syx86.com,Proxy
 HOST-SUFFIX,szbbs.net,Proxy
