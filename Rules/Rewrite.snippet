@@ -1,10 +1,10 @@
 # NAME: Merged Rewrite Rules (Rewrite)
 # TOTAL FILTERS: 423
-# TOTAL REWRITES: 52
-# TOTAL HOSTNAMES: 67
+# TOTAL REWRITES: 56
+# TOTAL HOSTNAMES: 68
 # UPDATED: Auto-updated
 
-[filter_local]
+# === Filter Rules ===
 HOST-SUFFIX,miaozhen.com, reject
 HOST-SUFFIX,ad-sign.byteimg.com, reject
 HOST-SUFFIX,tos.pstatp.com, reject
@@ -429,7 +429,7 @@ HOST-SUFFIX,wax.weibo.com.cn, reject
 HOST-SUFFIX,ad.weibo.com, reject
 HOST,bootpreload.uve.weibo.com, reject
 
-[rewrite_local]
+# === Rewrite Rules ===
 https:\/\/this-is-an-example\.com\/example\/ url reject-dict
 ^https?:\/\/ad\.lofter.com\/v1\.1\/yitou\/madr url reject-200
 ^https?:\/\/images\.pinduoduo\.com\/marketing\_api url reject-200
@@ -472,10 +472,14 @@ https:\/\/this-is-an-example\.com\/example\/ url reject-dict
 ^https?:\/\/edith\.xiaohongshu\.com\/api\/sns\/v\d\/note\/comment\/list url response-body red_id response-body fmz200
 ^https?:\/\/ci\.xiaohongshu\.com\/system_config\/watermark url reject-img
 ^https:\/\/weibointl\.api\.weibo\.cn\/portal\.php\?a=treehole&auth= url reject-dict
-console.error("Supabase 初始化失败，请检查 URL 和 Key 是否正确", e);
-const url = span.getAttribute('data-url');
-const { error } = await sbClient.rpc('increment_views', { page_url: url });
-const url = document.getElementById('itemUrl').value;
+^https?:\/\/app\.bilibili\.com\/x\/v2\/splash\/show url reject-200
+^https:\/\/app\.bilibili\.com\/x\/v2\/splash\/list url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/v2\/account\/myinfo\? url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/v2\/feed\/index url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/resource\/show\/tab url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/v2\/account\/mine url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/resource\/top\/activity url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
+^https?:\/\/app\.bilibili\.com\/x\/v2\/search\/square url script-response-body https://ddgksf2013.top/scripts/bilibili.ads.js
 http://slightly.qx/kill url script-echo-response https://raw.githubusercontent.com/Sliverkiss/QuantumultX/refs/heads/main/Script/switchMode.js
 ^https:\/\/www\.google\.com(?:\.[a-z]+|)\/(?:search\?(?:|.+?&)q=|$) url script-response-body https://raw.githubusercontent.com/NobyDa/Script/master/Surge/JS/Google_CAPTCHA.js
 ^https?:\/\/in\.m\.jd\.com\/product\/graphext\/\d+\.html url script-response-body https://raw.githubusercontent.com/wf021325/qx/master/js/jd_price.js
@@ -483,5 +487,5 @@ http://slightly.qx/kill url script-echo-response https://raw.githubusercontent.c
 ^https?:\/\/(www.)?(g|google)\.cn url 302 https://www.google.com
 ^https\:\/\/(weixin110\.qq|security.wechat)\.com\/cgi-bin\/mmspamsupport-bin\/newredirectconfirmcgi\? url script-response-body https://raw.githubusercontent.com/ddgksf2013/Scripts/refs/heads/master/weixin110.js
 
-[mitm]
-hostname = *.ddly666.top, *.smkj33.top, *.tslt.xyz, *.weibo.cn, *.weibo.com, 101.201.175.228, 101.201.62.20, 101.201.62.26, 124.250.48.3, 182.92.145.50, 182.92.251.113, 39.103.79.14, 39.106.97.84, 3dd0be8a-54fe-43ff-a0e7-f670c4f20432.bspapp.com, 47.95.49.75, 4thdimension.top, a.jxjt888.top, ad.lofter.com, apapia-sqk-weblogic.manmanbuy.com, api.blibee.com, api.bspapp.com, api.xueqiu.com, awg.enmonster.com, b.tslt.xyz, c.jxjt888.top, ci.xiaohongshu.com, d.syshhc.top, edith.xiaohongshu.com, g.syshhc.top, gjsx.vip, gz.gongzijx.com, hkj178.com, images.pinduoduo.com, in.m.jd.com, iosoi.cn, jabi.coding.net, jt.jxjt888.top, lofter.lf127.net, lysl2020.com, m.xgjyouhui.com, mp.weixin.qq.com, open.xueqiu.com, qj.bpojie.com, rec.xiaohongshu.com, rr*.googlevideo.com, security.wechat.com, slightly.qx, stock.xueqiu.com, tan.ipnas.ltd, this-is-an-example.com, tvapp.guilaile.cn, ucmp.sf-express.com, weibo.com, weixin110.qq.com, wp3.lobdol.cn, www.bbkj.work, www.benbenfx.xyz, www.freeheikeji.cn, www.google.cn, www.google.com*, www.i3zh.com, www.laoguikeji.cn, www.xiaohongshu.com, wx.mygolbs.com, wx.wxqqurl.cn, xcx.xianbaow.com, youtubei.googleapis.com
+# === MitM Hostnames ===
+hostname = *.ddly666.top, *.smkj33.top, *.tslt.xyz, *.weibo.cn, *.weibo.com, 101.201.175.228, 101.201.62.20, 101.201.62.26, 124.250.48.3, 182.92.145.50, 182.92.251.113, 39.103.79.14, 39.106.97.84, 3dd0be8a-54fe-43ff-a0e7-f670c4f20432.bspapp.com, 47.95.49.75, 4thdimension.top, a.jxjt888.top, ad.lofter.com, apapia-sqk-weblogic.manmanbuy.com, api.blibee.com, api.bspapp.com, api.xueqiu.com, app.bilibili.com, awg.enmonster.com, b.tslt.xyz, c.jxjt888.top, ci.xiaohongshu.com, d.syshhc.top, edith.xiaohongshu.com, g.syshhc.top, gjsx.vip, gz.gongzijx.com, hkj178.com, images.pinduoduo.com, in.m.jd.com, iosoi.cn, jabi.coding.net, jt.jxjt888.top, lofter.lf127.net, lysl2020.com, m.xgjyouhui.com, mp.weixin.qq.com, open.xueqiu.com, qj.bpojie.com, rec.xiaohongshu.com, rr*.googlevideo.com, security.wechat.com, slightly.qx, stock.xueqiu.com, tan.ipnas.ltd, this-is-an-example.com, tvapp.guilaile.cn, ucmp.sf-express.com, weibo.com, weixin110.qq.com, wp3.lobdol.cn, www.bbkj.work, www.benbenfx.xyz, www.freeheikeji.cn, www.google.cn, www.google.com*, www.i3zh.com, www.laoguikeji.cn, www.xiaohongshu.com, wx.mygolbs.com, wx.wxqqurl.cn, xcx.xianbaow.com, youtubei.googleapis.com

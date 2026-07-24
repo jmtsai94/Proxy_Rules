@@ -69,9 +69,10 @@ REWRITE_CONFIGS = {
 def fetch_content(url, retries=3):
     for i in range(retries):
         print(f"Fetching (Attempt {i+1}/{retries}): {url}")
+        # Use Quantumult X User-Agent to bypass browser checking on some rule/rewrite hosting sites (e.g. ddgksf2013.top)
         req = urllib.request.Request(
             url, 
-            headers={'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+            headers={'User-Agent': 'Quantumult X/1.4.3'}
         )
         try:
             with urllib.request.urlopen(req, timeout=15) as response:
@@ -196,8 +197,8 @@ def parse_rewrite(content, is_js=False):
             filter_rules.append(f"{rule_type},{rule_val}")
             continue
             
-        # Check if it's a rewrite rule
-        if re.search(r'\s+url\s+', line, re.IGNORECASE):
+        # Check if it's a rewrite rule using strict action checks to filter out JS code lines
+        if re.search(r'\s+url\s+(reject|reject-200|reject-img|reject-dict|reject-array|302|307|response-body|request-body|request-header|response-header|script-[\w\-]+)', line, re.IGNORECASE):
             rewrite_rules.append(line)
         
     return filter_rules, rewrite_rules, hostnames
@@ -305,20 +306,21 @@ def main():
                 f.write(f"# TOTAL HOSTNAMES: {len(all_hostnames)}\n")
                 f.write("# UPDATED: Auto-updated\n\n")
                 
+                # Output all rules directly without headers to comply with remote rewrite parser
                 if all_filters_ordered:
-                    f.write("[filter_local]\n")
+                    f.write("# === Filter Rules ===\n")
                     for filter_rule in all_filters_ordered:
                         f.write(f"{filter_rule}\n")
                     f.write("\n")
                 
                 if all_rewrites_ordered:
-                    f.write("[rewrite_local]\n")
+                    f.write("# === Rewrite Rules ===\n")
                     for rule in all_rewrites_ordered:
                         f.write(f"{rule}\n")
                     f.write("\n")
                     
                 if all_hostnames:
-                    f.write("[mitm]\n")
+                    f.write("# === MitM Hostnames ===\n")
                     hostname_str = ", ".join(sorted(all_hostnames))
                     f.write(f"hostname = {hostname_str}\n")
                 
