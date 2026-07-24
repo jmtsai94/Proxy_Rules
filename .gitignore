@@ -72,4 +72,6 @@ tmbootpicker.efi
 
 # Local temp snippet files
 /Filter_HKBroker.snippet
+/REWRITE_LOFTER.snippet
+
 
