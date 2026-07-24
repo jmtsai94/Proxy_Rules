@@ -69,3 +69,7 @@ tmbootpicker.efi
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+# Local temp snippet files
+/Filter_HKBroker.snippet
+

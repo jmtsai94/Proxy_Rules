@@ -1,5 +1,5 @@
 # NAME: Proxy Rules
-# TOTAL: 7855
+# TOTAL: 7857
 # UPDATED: Auto-updated
 
 HOST,a248.e.akamai.net,Proxy
@@ -6530,6 +6530,7 @@ HOST-SUFFIX,toggleable.com,Proxy
 HOST-SUFFIX,toh.info,Proxy
 HOST-SUFFIX,token.im,Proxy
 HOST-SUFFIX,tokenlon.im,Proxy
+HOST-SUFFIX,tokenplus.app,Proxy
 HOST-SUFFIX,tokyo-247.com,Proxy
 HOST-SUFFIX,tokyo-hot.com,Proxy
 HOST-SUFFIX,tokyo-porn-tube.com,Proxy
@@ -7634,6 +7635,7 @@ HOST-SUFFIX,zello.com,Proxy
 HOST-SUFFIX,zengjinyan.org,Proxy
 HOST-SUFFIX,zenmate.com,Proxy
 HOST-SUFFIX,zenmate.com.ru,Proxy
+HOST-SUFFIX,zenmux.ai,Proxy
 HOST-SUFFIX,zerohedge.com,Proxy
 HOST-SUFFIX,zeronet.io,Proxy
 HOST-SUFFIX,zeutch.com,Proxy

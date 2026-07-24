@@ -34,6 +34,16 @@ RULE_CONFIGS = {
     "Crypto.list": [
         "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/QuantumultX/Crypto/Crypto.list",
         "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/refs/heads/master/rule/QuantumultX/Cryptocurrency/Cryptocurrency.list"
+    ],
+    "advertising.list": [
+        "https://raw.githubusercontent.com/fmz200/wool_scripts/main/QuantumultX/filter/filter.list"
+    ],
+    "apple.list": [
+        "https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/QuantumultX/Apple/Apple.list"
+    ],
+    "HK_Broker.list": [
+        "https://raw.githubusercontent.com/LingJingMaster/Shadowrocket-Rules/main/HK_Broker.list",
+        "Rules/Source/Filter_HKBroker.snippet"
     ]
 }
 
@@ -52,6 +62,18 @@ def fetch_content(url, retries=3):
             if i == retries - 1:
                 return ""
             time.sleep(2)
+
+def read_local_file(filepath):
+    print(f"Reading local file: {filepath}")
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, 'r', encoding='utf-8') as f:
+                return f.read()
+        except Exception as e:
+            print(f"Error reading local file {filepath}: {e}")
+    else:
+        print(f"Local file not found: {filepath}")
+    return ""
 
 def parse_rules(content):
     rules = set()
@@ -122,11 +144,15 @@ def main():
     for filename, urls in RULE_CONFIGS.items():
         print(f"\n=== Processing {filename} ===")
         all_rules = set()
-        for url in urls:
-            content = fetch_content(url)
+        for url_or_path in urls:
+            if url_or_path.startswith(('http://', 'https://')):
+                content = fetch_content(url_or_path)
+            else:
+                content = read_local_file(url_or_path)
+                
             if content:
                 rules = parse_rules(content)
-                print(f"Parsed {len(rules)} unique rules from {url}")
+                print(f"Parsed {len(rules)} unique rules from {url_or_path}")
                 all_rules.update(rules)
                 
         print(f"Total unique rules merged for {filename}: {len(all_rules)}")
